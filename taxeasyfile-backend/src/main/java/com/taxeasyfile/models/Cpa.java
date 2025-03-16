@@ -2,7 +2,7 @@ package com.taxeasyfile.models;
 
 import jakarta.persistence.*;
 
-import java.security.Timestamp;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "cpas")
@@ -12,22 +12,24 @@ public class Cpa {
     private Long id;
 
     @Column(name="cpa_username", nullable = false, unique = true)
-    private String cpaUsername;
+    private String username;
 
     @Column(name="cpa_password", nullable = false)
-    private String cpaPassword;
+    private String password;
 
     @Column(name="cpa_email", nullable = false, unique = true)
-    private String cpaEmail;
+    private String email;
 
     @Column(name="created_at")
     private Timestamp createdAt;
 
-    public Cpa(Long id, String cpaUsername, String cpaPassword, String cpaEmail, Timestamp createdAt) {
+    public Cpa() {}
+
+    public Cpa(Long id, String username, String password, String email, Timestamp createdAt) {
         this.id = id;
-        this.cpaUsername = cpaUsername;
-        this.cpaPassword = cpaPassword;
-        this.cpaEmail = cpaEmail;
+        this.username = username;
+        this.password = password;
+        this.email = email;
         this.createdAt = createdAt;
     }
 
@@ -40,27 +42,27 @@ public class Cpa {
     }
 
     public String getCpaUsername() {
-        return cpaUsername;
+        return username;
     }
 
     public void setCpaUsername(String cpaUsername) {
-        this.cpaUsername = cpaUsername;
+        this.username = cpaUsername;
     }
 
     public String getCpaPassword() {
-        return cpaPassword;
+        return password;
     }
 
     public void setCpaPassword(String cpaPassword) {
-        this.cpaPassword = cpaPassword;
+        this.password = cpaPassword;
     }
 
     public String getCpaEmail() {
-        return cpaEmail;
+        return email;
     }
 
     public void setCpaEmail(String cpaEmail) {
-        this.cpaEmail = cpaEmail;
+        this.email = cpaEmail;
     }
 
     public Timestamp getCreatedAt() {
@@ -75,9 +77,9 @@ public class Cpa {
     public String toString() {
         return "Cpa{" +
                 "id=" + id +
-                ", cpaUsername='" + cpaUsername + '\'' +
-                ", cpaPassword='" + cpaPassword + '\'' +
-                ", cpaEmail='" + cpaEmail + '\'' +
+                ", cpaUsername='" + username + '\'' +
+                ", cpaPassword='" + password + '\'' +
+                ", cpaEmail='" + email + '\'' +
                 ", createdAt=" + createdAt +
                 '}';
     }
