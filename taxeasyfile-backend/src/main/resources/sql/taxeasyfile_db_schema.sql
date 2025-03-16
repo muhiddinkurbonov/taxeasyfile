@@ -1,0 +1,46 @@
+CREATE DATABASE 
+IF NOT EXISTS taxeasyfile_db;
+USE taxeasyfile_db;
+
+CREATE TABLE cpas (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    cpa_username VARCHAR(50) NOT NULL UNIQUE,
+    cpa_password VARCHAR(100) NOT NULL,
+    cpa_email VARCHAR(100) NOT NULL UNIQUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE clients (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    client_name VARCHAR(100) NOT NULL,
+    client_tin VARCHAR(20) NOT NULL UNIQUE, -- tax id
+    client_email VARCHAR(100),
+    cpa_id BIGINT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (cpa_id) REFERENCES cpas(id)
+);
+
+CREATE TABLE categories (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    category_name VARCHAR(50) NOT NULL UNIQUE,
+    max_capacity INT NOT NULL DEFAULT 100,
+    cpa_id BIGINT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (cpa_id) REFERENCES cpas(id)
+);
+
+CREATE TABLE tax_returns (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    client_id BIGINT NOT NULL,
+    tax_year INT NOT NULL,
+    tax_return_status ENUM('PENDING', 'IN_PROGRESS', 'COMPLETED') DEFAULT 'PENDING',
+    filing_date DATE,
+    total_income DECIMAL(12,2),
+    category_id BIGINT,
+    cpa_id BIGINT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (client_id) REFERENCES clients(id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL ON UPDATE CASCADE,
+    FOREIGN KEY (cpa_id) REFERENCES cpas(id)
+);
