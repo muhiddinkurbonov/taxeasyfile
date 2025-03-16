@@ -1,0 +1,80 @@
+# Backend (Spring Boot)
+
+# Maven build artifacts
+target/
+*.jar
+*.war
+
+*.properties
+*.yml
+
+# Maven wrapper (allow the wrapper JAR but ignore other wrapper files)
+.mvn/wrapper/*.bak
+.mvn/wrapper/*.log
+!/.mvn/wrapper/maven-wrapper.jar
+
+# Logs
+*.log
+logs/
+
+# IDE-specific (Spring Boot-related)
+.idea/                 
+*.iml                
+*.ipr                
+.classpath           
+.project             
+.settings/             
+.springBeans          
+.sts4-cache/           
+.factorypath           
+.apt_generated/      
+
+# Test and build exclusions
+!/src/main/**/target/
+!/src/test/**/target/
+
+# Frontend (React)
+
+# Node.js dependencies and build outputs
+node_modules/
+build/
+dist/
+
+# Logs and caches
+npm-debug.log
+yarn-error.log
+.cache/              
+
+# Environment files 
+.env
+.env.local
+.env.development
+.env.production
+
+# IDE-specific
+.idea/                 # IntelliJ IDEA
+*.iml                 # IntelliJ module files
+.vscode/               # VS Code settings
+
+# TypeScript-specific
+*.tsbuildinfo        
+
+# IDE files 
+.idea/
+*.iml
+.vscode/
+
+# System files
+*.DS_Store               # macOS
+Thumbs.db                # Windows
+
+# Temporary files
+*.bak
+*.swp
+*.tmp
+
+# Miscellaneous
+*.log               
+HELP.md                
+mvnw
+mvnw.cmd
