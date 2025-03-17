@@ -1,6 +1,6 @@
 package com.taxeasyfile.dtos;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
-public record CpaDTO(Long id, String username, String password, String email, LocalDateTime createdAt) {
+public record CpaDTO(Long id, String username, String password, String email, Timestamp createdAt) {
 }

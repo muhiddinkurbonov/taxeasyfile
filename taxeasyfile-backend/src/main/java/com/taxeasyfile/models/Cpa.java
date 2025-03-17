@@ -11,13 +11,13 @@ public class Cpa {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="cpa_username", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String username;
 
-    @Column(name="cpa_password", nullable = false)
+    @Column( nullable = false)
     private String password;
 
-    @Column(name="cpa_email", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column(name="created_at")
@@ -41,28 +41,28 @@ public class Cpa {
         this.id = id;
     }
 
-    public String getCpaUsername() {
+    public String getUsername() {
         return username;
     }
 
-    public void setCpaUsername(String cpaUsername) {
-        this.username = cpaUsername;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public String getCpaPassword() {
+    public String getPassword() {
         return password;
     }
 
-    public void setCpaPassword(String cpaPassword) {
-        this.password = cpaPassword;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    public String getCpaEmail() {
+    public String getEmail() {
         return email;
     }
 
-    public void setCpaEmail(String cpaEmail) {
-        this.email = cpaEmail;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public Timestamp getCreatedAt() {
@@ -77,9 +77,9 @@ public class Cpa {
     public String toString() {
         return "Cpa{" +
                 "id=" + id +
-                ", cpaUsername='" + username + '\'' +
-                ", cpaPassword='" + password + '\'' +
-                ", cpaEmail='" + email + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
                 ", createdAt=" + createdAt +
                 '}';
     }
