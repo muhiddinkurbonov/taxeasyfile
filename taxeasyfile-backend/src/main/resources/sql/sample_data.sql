@@ -1,9 +1,9 @@
 USE taxeasyfile_db;
 
 INSERT INTO users (username, password, email, role) VALUES
-('cpa1', 'pass1', 'cpa1@example.com', 'CPA'),
-('cpa2', 'pass2', 'cpa2@example.com', 'CPA'),
-('admin', 'pass3', 'admin@example.com', 'ADMIN');
+('cpa1', '$2a$10$hUZqaHzowgHNLF1cMs8u7eeVAaqtd/t04SJcaO9tsi/5mo3OpUtV2', 'cpa1@example.com', 'CPA'),
+('cpa2', '$2a$10$nl2VPf4BF3pZFllixYYvUOReGQKnBNnrKl/L4Hsch66BpsUUG5YmG', 'cpa2@example.com', 'CPA'),
+('admin', '$2a$10$IZzi8bpvgSrAzjHnZ2Th8ebIbkfy4JGrotL5fJ.uNqCpkLibrsQ3C', 'admin@example.com', 'ADMIN');
 
 
 INSERT INTO categories (name) VALUES

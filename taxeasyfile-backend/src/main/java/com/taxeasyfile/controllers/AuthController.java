@@ -24,21 +24,11 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody AuthRequest authRequest) {
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
+                new UsernamePasswordAuthenticationToken(authRequest.username(), authRequest.password())
         );
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(authRequest.getUsername());
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(authRequest.username());
         final String jwt = jwtUtil.generateToken(userDetails);
         return ResponseEntity.ok(jwt);
     }
 }
 
-class AuthRequest {
-    private String username;
-    private String password;
-
-    // Getters and Setters
-    public String getUsername() { return username; }
-    public void setUsername(String username) { this.username = username; }
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
-}
