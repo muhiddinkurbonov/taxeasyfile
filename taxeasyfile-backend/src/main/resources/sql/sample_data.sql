@@ -1,21 +1,31 @@
 USE taxeasyfile_db;
 
-INSERT INTO cpas (cpa_username, cpa_password, cpa_email) VALUES
-('johncpa', 'pass123', 'john.cpa@example.com'),
-('sarahcpa', 'secure456', 'sarah.cpa@example.com');
+INSERT INTO users (username, password, email, role) VALUES
+('cpa1', 'pass1', 'cpa1@example.com', 'CPA'),
+('cpa2', 'pass2', 'cpa2@example.com', 'CPA'),
+('admin', 'pass3', 'admin@example.com', 'ADMIN');
 
-INSERT INTO clients (client_name, client_tin, client_email, cpa_id) VALUES
-('Alice Johnson', '123-45-6789', 'alice@example.com', 1),     
-('Bob Smith', '987-65-4321', 'bob@example.com', 1),          
-('Carol White', '456-78-9123', 'carol@example.com', 2);       
 
-INSERT INTO categories (category_name, max_capacity, cpa_id) VALUES
-('Corporate', 150, 1),  
-('Military', 100, 1),    
-('Education', 200, 2);     
+INSERT INTO categories (name) VALUES
+('Corporate'),
+('Military'),
+('Education');
 
-INSERT INTO tax_returns (client_id, tax_year, tax_return_status, filing_date, total_income, category_id, cpa_id) VALUES
-(1, 2022, 'COMPLETED', '2023-04-15', 75000.00, 1, 1),   
-(1, 2023, 'PENDING', NULL, 80000.00, 2, 1),             
-(2, 2022, 'IN_PROGRESS', NULL, 65000.00, NULL, 1),      
-(3, 2022, 'COMPLETED', '2023-04-10', 90000.00, 3, 2);  
+INSERT INTO tax_year_limits (tax_year, max_capacity) VALUES
+(2024, 100), 
+(2025, 120); 
+
+INSERT INTO clients (name, tin, email, cpa_id) VALUES
+('John Doe', '123-45-6789', 'john.doe@example.com', 1),
+('Jane Smith', '987-65-4321', 'jane.smith@example.com', 2);
+
+INSERT INTO tax_returns (client_id, tax_year, tax_return_status, filing_date, total_income, category_id, cpa_id, file_attachment) VALUES
+(1, 2024, 'PENDING', NULL, 75000.00, 1, 1, '/uploads/return_john_2024.pdf'), 
+(2, 2024, 'IN_PROGRESS', '2025-03-15', 60000.00, 2, 2, '/uploads/return_jane_2024.pdf'); 
+
+
+SELECT * FROM users;
+SELECT * FROM categories;     
+SELECT * FROM tax_year_limits;  
+SELECT * FROM clients;          
+SELECT * FROM tax_returns;      
