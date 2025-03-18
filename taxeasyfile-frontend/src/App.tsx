@@ -1,9 +1,9 @@
-import './App.css';
+import React from 'react';
 
 function App() {
   return (
     <div className="App">
-      <h1>Taxeasyfile - Tax Filing Management App</h1>
+      <h1>TaxEasyFile CPA Portal</h1>
     </div>
   );
 }
