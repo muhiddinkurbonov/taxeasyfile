@@ -8,4 +8,5 @@ import java.util.List;
 public interface TaxReturnRepository extends JpaRepository<TaxReturn, Long> {
     List<TaxReturn> findByCpaId(Long cpaId);
     List<TaxReturn> findByCategoryId(Long categoryId);
+    long countByTaxYear(Integer taxYear);
 }

@@ -43,8 +43,9 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/login").permitAll() // Allow login endpoint
-                        .requestMatchers("/api/users/**").hasAnyRole("CPA", "ADMIN") // Secure user endpoints
+                        .requestMatchers("/api/auth/login").permitAll()
+                        .requestMatchers("/api/users/**").hasAnyRole("CPA", "ADMIN")
+                        .requestMatchers("/api/tax-returns/**").hasRole("CPA")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

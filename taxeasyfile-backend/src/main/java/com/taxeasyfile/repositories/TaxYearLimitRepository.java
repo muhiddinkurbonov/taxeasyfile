@@ -1,4 +1,4 @@
-package com.taxeasyfile.repositories;
+package com.taxeasyfile.repositories;  // Adjust if 'repositories'
 
 import com.taxeasyfile.models.TaxYearLimit;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface TaxYearLimitRepository extends JpaRepository<TaxYearLimit, Long> {
-    Optional<TaxYearLimit> findByCpaIdandTaxYear(Long cpaId, Integer taxYear);
+    Optional<TaxYearLimit> findByTaxYear(Integer taxYear);
 }
