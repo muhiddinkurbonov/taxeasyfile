@@ -1,9 +1,13 @@
 package com.taxeasyfile.config;
 
+import com.taxeasyfile.models.User;
+import com.taxeasyfile.repositories.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -14,6 +18,8 @@ import java.util.function.Function;
 
 @Component
 public class JwtUtil {
+    @Autowired
+    private UserRepository userRepository;
     // Secret key must be at least 32 characters for HS256
     private final String SECRET_KEY = "your-very-secure-secret-key-32-chars-long";
     private final long EXPIRATION_TIME = 1000 * 60 * 60 * 10; // 10 hours
@@ -45,7 +51,10 @@ public class JwtUtil {
     }
 
     public String generateToken(UserDetails userDetails) {
+        User user = userRepository.findByUsername(userDetails.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         Map<String, Object> claims = new HashMap<>();
+        claims.put("cpaId", user.getId());
         return createToken(claims, userDetails.getUsername());
     }
 

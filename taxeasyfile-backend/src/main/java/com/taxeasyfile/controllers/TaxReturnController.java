@@ -2,22 +2,33 @@ package com.taxeasyfile.controllers;
 
 import com.taxeasyfile.dtos.TaxReturnDTO;
 import com.taxeasyfile.exception.ResourceNotFoundException;
+import com.taxeasyfile.models.TaxReturn;
 import com.taxeasyfile.services.TaxReturnService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/tax-returns")
 public class TaxReturnController {
-    @Autowired
+
     private TaxReturnService taxReturnService;
+
+    public TaxReturnController(TaxReturnService taxReturnService) {
+        this.taxReturnService = taxReturnService;
+    }
 
     @PostMapping
     public ResponseEntity<TaxReturnDTO> createTaxReturn(
@@ -28,10 +39,24 @@ public class TaxReturnController {
     }
 
     @GetMapping
-    public ResponseEntity<List<TaxReturnDTO>> getAllTaxReturns(
-            @AuthenticationPrincipal UserDetails userDetails) {
-        List<TaxReturnDTO> taxReturns = taxReturnService.getAllTaxReturns(userDetails.getUsername());
-        return ResponseEntity.ok(taxReturns);
+    public ResponseEntity<Map<String, Object>> getTaxReturns(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir
+    ) {
+        try {
+            Page<TaxReturnDTO> taxReturns = taxReturnService.getTaxReturns(page, size, sortBy, sortDir);
+            Map<String, Object> response = new HashMap<>();
+            response.put("content", taxReturns.getContent());
+            response.put("totalElements", taxReturns.getTotalElements());
+
+            return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(500).build();
+        }
     }
 
     @GetMapping("/{id}")
