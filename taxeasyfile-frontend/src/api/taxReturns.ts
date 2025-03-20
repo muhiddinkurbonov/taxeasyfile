@@ -1,4 +1,4 @@
-import { api } from "./utils"; // Import centralized api
+import { api } from "./utils"; 
 import { TaxReturnDTO } from "./types";
 
 export const getTaxReturns = async (
@@ -10,7 +10,7 @@ export const getTaxReturns = async (
   const response = await api.get("/tax-returns", {
     params: { page, size, sortBy, sortDir },
   });
-  return response.data; // Spring returns { content: [], totalElements: number, ... }
+  return response.data; 
 };
 
 export const createTaxReturn = async (

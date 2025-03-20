@@ -1,4 +1,4 @@
-import { api } from "./utils"; // Import centralized api
+import { api } from "./utils"; 
 import { CategoryDTO } from "./types";
 
 export const getCategories = async (): Promise<CategoryDTO[]> => {

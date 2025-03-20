@@ -20,7 +20,7 @@ import {
 
 const ClientManagement = () => {
   const [clients, setClients] = useState<ClientDTO[]>([]);
-  const initialCpaId = Number(localStorage.getItem("cpaId"));
+  const initialCpaId = Number(localStorage.getItem("userId") && localStorage.getItem("role") === "cpa");
   const [newClient, setNewClient] = useState({
     cpaId: initialCpaId,
     name: "",
@@ -30,14 +30,18 @@ const ClientManagement = () => {
   const [editingClient, setEditingClient] = useState<ClientDTO | null>(null);
   const [error, setError] = useState<string>("");
 
-  useEffect(() => {
-    const fetchClients = async () => {
+useEffect(() => {
+  const fetchClients = async () => {
+    try {
       const fetchedClients = await getClients();
       setClients(fetchedClients);
-    };
-
-    fetchClients();
-  }, []);
+    } catch (error) {
+      console.error("Error fetching clients:", error);
+      setError("Failed to load clients");
+    }
+  };
+  fetchClients();
+}, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

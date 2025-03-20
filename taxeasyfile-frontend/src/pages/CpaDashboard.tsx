@@ -14,7 +14,7 @@ import {
   DialogActions,
 } from "@mui/material";
 
-const Dashboard = () => {
+const CpaDashboard = () => {
   const [taxReturns, setTaxReturns] = useState<TaxReturnDTO[]>([]);
   const [categories, setCategories] = useState<CategoryDTO[]>([]);
   const [loading, setLoading] = useState(true);
@@ -32,34 +32,34 @@ const Dashboard = () => {
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
   const [totalElements, setTotalElements] = useState(0);
 
-useEffect(() => {
-  let isMounted = true;
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const taxReturnResponse = await getTaxReturns(
-        page,
-        rowsPerPage,
-        sortBy,
-        sortDir
-      );
-      if (isMounted) {
-        setTaxReturns(taxReturnResponse.content ?? []);
-        setTotalElements(taxReturnResponse.totalElements ?? 0);
-        setCategories(await getCategories());
+  useEffect(() => {
+    let isMounted = true;
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const taxReturnResponse = await getTaxReturns(
+          page,
+          rowsPerPage,
+          sortBy,
+          sortDir
+        );
+        if (isMounted) {
+          setTaxReturns(taxReturnResponse.content ?? []);
+          setTotalElements(taxReturnResponse.totalElements ?? 0);
+          setCategories(await getCategories());
+        }
+      } catch (err: any) {
+        console.error("Failed to fetch data:", err);
+        if (isMounted) setTaxReturns([]);
+      } finally {
+        if (isMounted) setLoading(false);
       }
-    } catch (err: any) {
-      console.error("Failed to fetch data:", err);
-      if (isMounted) setTaxReturns([]);
-    } finally {
-      if (isMounted) setLoading(false);
-    }
-  };
-  fetchData();
-  return () => {
-    isMounted = false;
-  };
-}, [page, rowsPerPage, sortBy, sortDir]);
+    };
+    fetchData();
+    return () => {
+      isMounted = false;
+    };
+  }, [page, rowsPerPage, sortBy, sortDir]);
 
   const handleSave = (savedTaxReturn: TaxReturnDTO) => {
     setTaxReturns((prev) =>
@@ -209,4 +209,4 @@ useEffect(() => {
   );
 };
 
-export default Dashboard;
+export default CpaDashboard;

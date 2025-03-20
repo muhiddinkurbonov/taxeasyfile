@@ -1,42 +1,49 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
 import { useNavigate, useLocation } from "react-router-dom";
-import { logout } from "../api/auth"; // Import logout function from your auth API
+import { logout } from "../api/auth";
 
 const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [role, setRole] = useState<string | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Check login status on mount and when location changes
   useEffect(() => {
     const token = localStorage.getItem("token");
-    setIsLoggedIn(!!token); // Set to true if token exists
-  }, [location]); // Re-run when route changes
+    const userRole = localStorage.getItem("role");
+    setIsLoggedIn(!!token);
+    setRole(userRole);
+  }, [location]);
 
   const handleLogout = () => {
-    logout(); // Call your logout function to clear localStorage
+    logout();
     setIsLoggedIn(false);
-    navigate("/login"); // Redirect to login page
+    setRole(null);
+    navigate("/login");
   };
 
-  const handleLogin = () => {
-    navigate("/login"); // Redirect to login page
-  };
 
   const handleDashboard = () => {
-    navigate("/dashboard"); // Redirect to dashboard
+    if (role === "CPA") {
+      navigate("/cpa/dashboard");
+    } else if (role === "ADMIN") {
+      navigate("/admin/dashboard");
+    } else {
+      navigate("/login");
+    }
   };
 
+
   const handleClients = () => {
-    navigate("/clients"); // Redirect to client management
+    navigate("/clients");
   };
 
   return (
     <AppBar position="static">
       <Toolbar>
         <Typography variant="h6" sx={{ flexGrow: 1 }}>
-          CPA Management System
+          TaxEasyFile
         </Typography>
         <Box>
           {isLoggedIn ? (
@@ -44,18 +51,23 @@ const Navbar = () => {
               <Button color="inherit" onClick={handleDashboard}>
                 Dashboard
               </Button>
-              <Button color="inherit" onClick={handleClients}>
-                Clients
-              </Button>
+              {role === "ADMIN" && (
+                <>
+                  <Button color="inherit" onClick={handleClients}>
+                    Clients
+                  </Button>
+                </>
+              )}
+              {role === "CPA" && (
+                <Button color="inherit" onClick={handleClients}>
+                  Clients
+                </Button>
+              )}
               <Button color="inherit" onClick={handleLogout}>
                 Logout
               </Button>
             </>
-          ) : (
-            <Button color="inherit" onClick={handleLogin}>
-              Login
-            </Button>
-          )}
+          ) : ""}
         </Box>
       </Toolbar>
     </AppBar>

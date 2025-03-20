@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { login } from "../api/auth";
 
 interface LoginProps {
-  onLogin: (token: string) => void;
+  onLogin: (token: { jwt: string; refreshToken: string }) => void;
 }
 
 const Login = ({ onLogin }: LoginProps) => {

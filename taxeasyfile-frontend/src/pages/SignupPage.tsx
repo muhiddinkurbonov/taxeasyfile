@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -6,45 +6,30 @@ import {
   Typography,
   Paper,
   Container,
+  MenuItem,
+  Select,
+  InputLabel,
+  FormControl,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { setAuthToken } from "../api/utils";
-import {login} from "../api/auth";
+import { signup } from "../api/auth"; // Adjust path to auth.ts
 
-const LoginPage = () => {
+const SignupPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [role, setRole] = useState<"CPA" | "ADMIN">("CPA"); // Default to CPA
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  useEffect(() => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("userId");
-    localStorage.removeItem("role");
-    setAuthToken("");
-  }, []);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(""); 
     try {
-      const authResponse = await login({ username, password });
-      localStorage.setItem("token", authResponse.jwt);
-      localStorage.setItem("refreshToken", authResponse.refreshToken);
-      localStorage.setItem("userId", authResponse.userId);
-      localStorage.setItem("role", authResponse.role);
-      setAuthToken(authResponse.jwt);
-
-      if (authResponse.role === "CPA") {
-        navigate("/cpa/dashboard");
-      } else if (authResponse.role === "ADMIN") {
-        navigate("/admin/dashboard");
-      } else {
-        console.error("Unknown role:", authResponse.role);
-        navigate("/login");
-      }
-    } catch (err) {
-      setError("Username or password is incorrect.");
+      await signup({ username, password, email, role });
+      navigate("/login"); 
+    } catch (err: any) {
+      setError(err.response?.data || "Signup failed. Please try again.");
     }
   };
 
@@ -73,7 +58,7 @@ const LoginPage = () => {
             gutterBottom
             sx={{ fontWeight: "bold", color: "#1976d2" }}
           >
-            Login
+            Sign Up
           </Typography>
           {error && (
             <Typography color="error" align="center" sx={{ mb: 2 }}>
@@ -91,6 +76,16 @@ const LoginPage = () => {
               sx={{ mb: 2 }}
             />
             <TextField
+              label="Email"
+              variant="outlined"
+              type="email"
+              fullWidth
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              sx={{ mb: 2 }}
+            />
+            <TextField
               label="Password"
               variant="outlined"
               type="password"
@@ -98,8 +93,19 @@ const LoginPage = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              sx={{ mb: 3 }}
+              sx={{ mb: 2 }}
             />
+            <FormControl fullWidth sx={{ mb: 3 }}>
+              <InputLabel>Role</InputLabel>
+              <Select
+                value={role}
+                label="Role"
+                onChange={(e) => setRole(e.target.value as "CPA" | "ADMIN")}
+              >
+                <MenuItem value="CPA">CPA</MenuItem>
+                <MenuItem value="ADMIN">ADMIN</MenuItem>
+              </Select>
+            </FormControl>
             <Button
               type="submit"
               variant="contained"
@@ -112,13 +118,13 @@ const LoginPage = () => {
                 "&:hover": { backgroundColor: "#115293" },
               }}
             >
-              Login
+              Sign Up
             </Button>
           </form>
           <Typography align="center" sx={{ mt: 2 }}>
-            Don’t have an account?{" "}
-            <Button color="primary" onClick={() => navigate("/signup")}>
-              Sign Up
+            Already have an account?{" "}
+            <Button color="primary" onClick={() => navigate("/login")}>
+              Log In
             </Button>
           </Typography>
         </Paper>
@@ -127,4 +133,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default SignupPage;

@@ -3,12 +3,19 @@ export interface AuthRequest {
   password: string;
 }
 
+export interface SignupRequest {
+  username: string;
+  password: string;
+  email: string;
+  role: "CPA" | "ADMIN";
+}
+
 export interface TaxReturnDTO {
   id?: number;
   clientId?: number;
   taxYear: number;
   taxReturnStatus: "PENDING" | "IN_PROGRESS" | "COMPLETED";
-  filingDate?: string; // ISO date string
+  filingDate?: string; 
   totalIncome?: number;
   categoryId?: number;
   cpaId: number;
@@ -26,4 +33,29 @@ export interface ClientDTO {
   tin: string;
   email: string;
   cpaId: number; 
+}
+
+export interface User {
+  id: number;
+  username: string;
+  email: string;
+  role: "CPA" | "ADMIN";
+  registrationDate: string;
+  active: boolean;
+}
+
+export interface CpaStats {
+  totalCpas: number;
+  totalClients: number;
+  avgClientsPerCpa: number;
+  taxReturnsThisMonth: number;
+  taxReturnsThisYear: number;
+  totalTaxReturns: number;
+}
+
+export interface AuthResponse {
+  jwt: string;
+  refreshToken: string;
+  userId: string;
+  role: "CPA" | "ADMIN";
 }

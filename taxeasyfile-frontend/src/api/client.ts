@@ -1,4 +1,4 @@
-import { api } from "./utils"; // Import centralized api
+import { api } from "./utils"; 
 import { ClientDTO } from "./types";
 
 export const getClients = async (): Promise<ClientDTO[]> => {
@@ -15,7 +15,6 @@ export const createClient = async (client: ClientDTO): Promise<ClientDTO> => {
     return response.data;
   } catch (error: any) {
     if (error.response) {
-      // Handle backend errors
       const status = error.response.status;
       const message = error.response.data?.message || error.response.data;
       if (status === 409 || (status === 400 && message.includes("TIN"))) {
@@ -24,7 +23,7 @@ export const createClient = async (client: ClientDTO): Promise<ClientDTO> => {
       throw new Error(message || "Failed to create client");
     }
     console.error("Failed to create client:", error);
-    throw error; // Re-throw other unexpected errors
+    throw error; 
   }
 };
 

@@ -30,7 +30,7 @@ const TaxReturnForm = ({ taxReturn, onSave, onCancel }: TaxReturnFormProps) => {
     const initializeForm = async () => {
       await fetchData();
       if (taxReturn) {
-        setFormData(taxReturn); // Set formData after data is fetched
+        setFormData(taxReturn); 
       }
     };
     initializeForm();
@@ -107,7 +107,7 @@ const TaxReturnForm = ({ taxReturn, onSave, onCancel }: TaxReturnFormProps) => {
     e.preventDefault();
     try {
       setError("");
-      const cpaId = Number(localStorage.getItem("cpaId")) || 1;
+      const cpaId = Number(localStorage.getItem("userId")) || 1;
       const updatedFormData = { ...formData, cpaId };
       let savedTaxReturn: TaxReturnDTO;
       if (taxReturn?.id) {
