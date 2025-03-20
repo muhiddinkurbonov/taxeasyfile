@@ -1,4 +1,4 @@
-package com.taxeasyfile.repositories;  // Adjust if 'repositories'
+package com.taxeasyfile.repositories;
 
 import com.taxeasyfile.models.TaxYearLimit;
 import org.springframework.data.jpa.repository.JpaRepository;

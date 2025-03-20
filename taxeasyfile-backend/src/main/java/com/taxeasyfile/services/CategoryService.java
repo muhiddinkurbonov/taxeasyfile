@@ -19,7 +19,6 @@ public class CategoryService {
         Iterable<Category> categories;
         try {
             categories = categoryRepository.findAll();
-            System.out.println("==============" + categories);
             if(!categories.iterator().hasNext())
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).body(categories);
             return ResponseEntity.ok(categories);

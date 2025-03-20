@@ -7,7 +7,6 @@ import com.taxeasyfile.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,10 +36,8 @@ public class TaxReturnService {
         User cpa = userRepository.findByUsername(cpaUsername)
                 .orElseThrow(() -> new ResourceNotFoundException("CPA not found: " + cpaUsername));
 
-        // Check workload capacity
         checkWorkloadCapacity(cpa.getId(), dto.taxYear());
 
-        // Validate client exists and belongs to CPA
         Client client = clientRepository.findById(dto.clientId())
                 .filter(cl -> cl.getCpaId().equals(cpa.getId()))
                 .orElseThrow(() -> new ResourceNotFoundException("Client not found or not owned by CPA: " + dto.clientId()));
@@ -65,23 +62,19 @@ public class TaxReturnService {
     }
 
     @Transactional(readOnly = true)
-    public Page<TaxReturnDTO> getTaxReturns(int page, int size, String sortBy, String sortDir) {
-        // Validate inputs
-        if (page < 0) {
-            throw new IllegalArgumentException("Page number cannot be negative");
-        }
-        if (size <= 0) {
-            throw new IllegalArgumentException("Page size must be greater than zero");
-        }
+    public Page<TaxReturnDTO> getAllTaxReturns(int page, int size, String sortBy, String sortDir) {
+        Sort.Direction direction = sortDir.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(direction, sortBy));
+        Page<TaxReturn> taxReturns = taxReturnRepository.findAll(pageRequest);
+        return taxReturns.map(this::toDTO);
+    }
 
-        // Create Pageable object with sorting
-        Sort.Direction direction = Sort.Direction.fromString(sortDir.toUpperCase());
-        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
-
-        // Fetch paginated and sorted tax returns
-        Page<TaxReturn> taxReturns = taxReturnRepository.findAll(pageable);
-
-        // Convert to DTOs
+    public Page<TaxReturnDTO> getTaxReturnsForCpa(Long cpaId, int page, int size, String sortBy, String sortDir) {
+        Sort.Direction direction = sortDir.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(direction, sortBy));
+        List<Client> clients = clientRepository.findByCpaId(cpaId);
+        List<Long> clientIds = clients.stream().map(Client::getId).collect(Collectors.toList());
+        Page<TaxReturn> taxReturns = taxReturnRepository.findByClientIdIn(clientIds, pageRequest);
         return taxReturns.map(this::toDTO);
     }
 
@@ -90,6 +83,7 @@ public class TaxReturnService {
                 .orElseThrow(() -> new ResourceNotFoundException("Tax return not found: " + id));
         return toDTO(taxReturn);
     }
+
 
     public TaxReturnDTO updateTaxReturn(Long id, TaxReturnDTO dto) {
         TaxReturn taxReturn = taxReturnRepository.findById(id)

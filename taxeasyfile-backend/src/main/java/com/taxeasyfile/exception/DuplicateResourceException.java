@@ -1,2 +1,7 @@
-package com.taxeasyfile.exception;public class DuplicateResourceException {
+package com.taxeasyfile.exception;
+
+public class DuplicateResourceException extends RuntimeException {
+    public DuplicateResourceException(String message) {
+        super(message);
+    }
 }

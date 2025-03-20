@@ -1,2 +1,7 @@
-package com.taxeasyfile.exception;public class ResourceNotFoundException {
+package com.taxeasyfile.exception;
+
+public class ResourceNotFoundException extends RuntimeException {
+    public ResourceNotFoundException(String message) {
+        super(message);
+    }
 }

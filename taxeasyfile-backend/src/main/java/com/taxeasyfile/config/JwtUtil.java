@@ -6,6 +6,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
@@ -14,16 +15,25 @@ import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 
 @Component
 public class JwtUtil {
+
+    private final SecretKey key;
+    private final long EXPIRATION_TIME = 1000 * 60 * 1; // 1 hour
+    private final long REFRESH_EXPIRATION_TIME = 1000 * 60 * 60 * 24; // 24 hours
+
     @Autowired
     private UserRepository userRepository;
-    // Secret key must be at least 32 characters for HS256
-    private final String SECRET_KEY = "your-very-secure-secret-key-32-chars-long";
-    private final long EXPIRATION_TIME = 1000 * 60 * 60 * 10; // 10 hours
-    private final SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+
+    public JwtUtil(@Value("${jwt.secret}") String secretKey) {
+        if (secretKey == null || secretKey.length() < 32) {
+            throw new IllegalArgumentException("JWT secret key must be at least 32 characters long");
+        }
+        this.key = Keys.hmacShaKeyFor(secretKey.getBytes());
+    }
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -40,31 +50,40 @@ public class JwtUtil {
 
     private Claims extractAllClaims(String token) {
         return Jwts.parser()
-                .verifyWith(key) // Verify using the secret key
-                .build()        // Build the parser
-                .parseSignedClaims(token) // Parse the token
-                .getPayload();  // Get the claims
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
     }
 
     private Boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 
-    public String generateToken(UserDetails userDetails) {
+    public Map<String, String> generateTokens(UserDetails userDetails) {
         User user = userRepository.findByUsername(userDetails.getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         Map<String, Object> claims = new HashMap<>();
-        claims.put("cpaId", user.getId());
-        return createToken(claims, userDetails.getUsername());
+        claims.put("userId", user.getId().toString());
+        String jwt = createToken(claims, userDetails.getUsername(), EXPIRATION_TIME);
+        String refreshToken = UUID.randomUUID().toString(); // Simple random UUID
+        user.setRefreshToken(refreshToken);
+        userRepository.save(user);
+        Map<String, String> tokens = new HashMap<>();
+        tokens.put("jwt", jwt);
+        tokens.put("refreshToken", refreshToken);
+        tokens.put("role", user.getRole().name());
+        tokens.put("userId", user.getId().toString());
+        return tokens;
     }
 
-    private String createToken(Map<String, Object> claims, String subject) {
+    private String createToken(Map<String, Object> claims, String subject, long expirationTime) {
         return Jwts.builder()
                 .claims(claims)
                 .subject(subject)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .signWith(key) // Sign with the secret key
+                .expiration(new Date(System.currentTimeMillis() + expirationTime))
+                .signWith(key)
                 .compact();
     }
 

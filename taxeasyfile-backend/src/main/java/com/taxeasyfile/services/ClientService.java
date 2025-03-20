@@ -37,16 +37,13 @@ public class ClientService {
             throw new IllegalArgumentException("Client name and TIN cannot be empty.");
         }
 
-        // Check for existing client with the same TIN
         if (clientRepository.existsByTin(dto.tin())) {
             throw new DuplicateResourceException("A client with TIN " + dto.tin() + " already exists.");
         }
 
-        // Find CPA
         User cpa = userRepository.findByUsername(cpaUsername)
                 .orElseThrow(() -> new ResourceNotFoundException("CPA not found: " + cpaUsername));
 
-        // Create and save client
         Client client = new Client();
         client.setName(dto.name());
         client.setTin(dto.tin());

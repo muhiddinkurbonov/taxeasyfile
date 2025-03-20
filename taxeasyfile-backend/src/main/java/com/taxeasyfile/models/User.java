@@ -2,6 +2,7 @@ package com.taxeasyfile.models;
 
 import jakarta.persistence.*;
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "users")
@@ -22,6 +23,15 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role = Role.CPA;
+
+    @Column(name = "registration_date")
+    private LocalDateTime registrationDate;
+
+    @Column(nullable = false)
+    private boolean active = true;
+
+    @Column(name = "refresh_token", unique = true, length = 255)
+    private String refreshToken; // Add this field
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt = Instant.now();
@@ -47,9 +57,31 @@ public class User {
     public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
     public Instant getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(Instant updatedAt) { this.updatedAt = updatedAt; }
+    public String getRefreshToken() { return refreshToken; }
+    public void setRefreshToken(String refreshToken) { this.refreshToken = refreshToken; }
+
+    public LocalDateTime getRegistrationDate() {
+        return registrationDate;
+    }
+
+    public void setRegistrationDate(LocalDateTime registrationDate) {
+        this.registrationDate = registrationDate;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 
     @PreUpdate
     public void preUpdate() {
         this.updatedAt = Instant.now();
+    }
+    @PrePersist
+    public void prePersist() {
+        this.registrationDate = LocalDateTime.now();
     }
 }

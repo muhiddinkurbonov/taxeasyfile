@@ -13,4 +13,9 @@ public class TaxEasyFileBackendApplication {
 		SpringApplication.run(TaxEasyFileBackendApplication.class, args);
 	}
 
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+
 }

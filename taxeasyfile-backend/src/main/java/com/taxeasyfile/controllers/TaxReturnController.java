@@ -1,17 +1,15 @@
 package com.taxeasyfile.controllers;
 
 import com.taxeasyfile.dtos.TaxReturnDTO;
-import com.taxeasyfile.exception.ResourceNotFoundException;
-import com.taxeasyfile.models.TaxReturn;
+import com.taxeasyfile.models.User;
+import com.taxeasyfile.repositories.UserRepository;
 import com.taxeasyfile.services.TaxReturnService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +28,9 @@ public class TaxReturnController {
         this.taxReturnService = taxReturnService;
     }
 
+    @Autowired
+    UserRepository userRepository;
+
     @PostMapping
     public ResponseEntity<TaxReturnDTO> createTaxReturn(
             @Valid @RequestBody TaxReturnDTO taxReturnDTO,
@@ -43,21 +44,34 @@ public class TaxReturnController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
             @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "asc") String sortDir
+            @RequestParam(defaultValue = "asc") String sortDir,
+            Authentication authentication
     ) {
         try {
-            Page<TaxReturnDTO> taxReturns = taxReturnService.getTaxReturns(page, size, sortBy, sortDir);
+            String username = authentication.getName();
+            User user = userRepository.findByUsername(username)
+                    .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+            Page<TaxReturnDTO> taxReturns;
+            if ("CPA".equals(user.getRole().name())) {
+                taxReturns = taxReturnService.getTaxReturnsForCpa(user.getId(), page, size, sortBy, sortDir);
+            } else if ("ADMIN".equals(user.getRole().name())) {
+                taxReturns = taxReturnService.getAllTaxReturns(page, size, sortBy, sortDir);
+            } else {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+
             Map<String, Object> response = new HashMap<>();
             response.put("content", taxReturns.getContent());
             response.put("totalElements", taxReturns.getTotalElements());
-
             return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
         } catch (Exception e) {
-            return ResponseEntity.status(500).build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<TaxReturnDTO> getTaxReturnById(@PathVariable Long id) {
@@ -91,15 +105,5 @@ public class TaxReturnController {
             @PathVariable Long categoryId) {
         TaxReturnDTO updated = taxReturnService.moveTaxReturnToCategory(id, categoryId);
         return ResponseEntity.ok(updated);
-    }
-
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<String> handleNotFound(ResourceNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
-    }
-
-    @ExceptionHandler(IllegalStateException.class)
-    public ResponseEntity<String> handleIllegalState(IllegalStateException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 }
