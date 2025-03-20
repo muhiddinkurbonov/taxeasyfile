@@ -14,6 +14,7 @@ import java.time.YearMonth;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -85,7 +86,6 @@ public class AdminController {
         return ResponseEntity.ok(stats);
     }
 
-    // User Actions
     @PutMapping("/users/{id}/role")
     public ResponseEntity<String> updateUserRole(@PathVariable Long id, @RequestBody Map<String, String> body) {
         User user = userRepository.findById(id)
@@ -112,9 +112,9 @@ public class AdminController {
     public ResponseEntity<String> resetUserPassword(@PathVariable Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        String newPassword = "default123"; // In practice, generate a random one and email it
+        String newPassword = UUID.randomUUID().toString();
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
-        return ResponseEntity.ok("Password reset to default123"); // Placeholder response
+        return ResponseEntity.ok("Password reset to: " + newPassword);
     }
 }

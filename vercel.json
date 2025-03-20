@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "taxeasy-frontend/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "taxeasyfile-frontend/build"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "taxeasyfile-frontend/build/index.html"
+    }
+  ]
+}

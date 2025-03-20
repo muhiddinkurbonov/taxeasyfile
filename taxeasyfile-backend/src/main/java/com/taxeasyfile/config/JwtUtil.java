@@ -66,7 +66,7 @@ public class JwtUtil {
         Map<String, Object> claims = new HashMap<>();
         claims.put("userId", user.getId().toString());
         String jwt = createToken(claims, userDetails.getUsername(), EXPIRATION_TIME);
-        String refreshToken = UUID.randomUUID().toString(); // Simple random UUID
+        String refreshToken = UUID.randomUUID().toString();
         user.setRefreshToken(refreshToken);
         userRepository.save(user);
         Map<String, String> tokens = new HashMap<>();
