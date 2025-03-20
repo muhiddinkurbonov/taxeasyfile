@@ -37,7 +37,7 @@ logs/
 
 # Node.js dependencies and build outputs
 node_modules/
-build/
+# build/
 dist/
 
 # Logs and caches
