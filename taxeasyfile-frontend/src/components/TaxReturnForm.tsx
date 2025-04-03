@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { TextField, Button, MenuItem, Box, Typography } from "@mui/material";
 import { TaxReturnDTO, ClientDTO, CategoryDTO } from "../api/types";
 import { createTaxReturn, updateTaxReturn } from "../api/taxReturns";
@@ -26,17 +26,7 @@ const TaxReturnForm = ({ taxReturn, onSave, onCancel }: TaxReturnFormProps) => {
   const [categories, setCategories] = useState<CategoryDTO[]>([]);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    const initializeForm = async () => {
-      await fetchData();
-      if (taxReturn) {
-        setFormData(taxReturn); 
-      }
-    };
-    initializeForm();
-  }, [taxReturn]);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const [clientList, categoryList] = await Promise.all([
         getClients(),
@@ -74,7 +64,17 @@ const TaxReturnForm = ({ taxReturn, onSave, onCancel }: TaxReturnFormProps) => {
       console.error("Failed to fetch data:", err);
       setError("Failed to load clients or categories");
     }
-  };
+  }, [taxReturn]); // fetchData depends on taxReturn
+
+  useEffect(() => {
+    const initializeForm = async () => {
+      await fetchData();
+      if (taxReturn) {
+        setFormData(taxReturn);
+      }
+    };
+    initializeForm();
+  }, [fetchData, taxReturn]); 
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>

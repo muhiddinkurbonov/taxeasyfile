@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Box,
   Grid,
@@ -34,11 +34,7 @@ const AdminDashboard = () => {
     ""
   );
 
-  useEffect(() => {
-    fetchData();
-  }, [roleFilter, statusFilter]);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const userFilters = {
         role: roleFilter || undefined,
@@ -58,7 +54,11 @@ const AdminDashboard = () => {
     } catch (err) {
       console.error("Failed to fetch data:", err);
     }
-  };
+  }, [roleFilter, statusFilter]); 
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const handleRoleChange = async (id: number, newRole: "CPA" | "ADMIN") => {
     await updateUserRole(id, newRole);
