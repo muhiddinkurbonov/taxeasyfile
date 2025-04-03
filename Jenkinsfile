@@ -20,8 +20,12 @@ pipeline {
         stage('Build Frontend') {
             steps {
                 dir('frontend') {
-                    nodejs 'npm install'
-                    nodejs 'npm run build'
+            script {
+                withEnv(["PATH+NODE=${tool 'NodeJS'}/bin"]) {
+                    sh 'npm install'
+                    sh 'npm run build'
+                }
+            }
                     script {
                         docker.withRegistry('https://070021538304.dkr.ecr.us-east-1.amazonaws.com', 'aws-credentials') {
                             def frontendImage = docker.build("${ECR_REPO_FRONTEND}:${BUILD_NUMBER}")
