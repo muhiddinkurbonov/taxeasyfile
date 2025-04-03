@@ -27,9 +27,12 @@ pipeline {
                         }
                     }
                     script {
-                        docker.withRegistry('https://070021538304.dkr.ecr.us-east-1.amazonaws.com', 'awsCred') {
-                            def frontendImage = docker.build("${ECR_REPO_FRONTEND}:${BUILD_NUMBER}")
-                            frontendImage.push()
+                        withCredentials([aws(credentialsId: 'awsCred', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                            bat "aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin 070021538304.dkr.ecr.us-east-1.amazonaws.com"
+                            docker.withRegistry("https://070021538304.dkr.ecr.us-east-1.amazonaws.com", 'awsCred') {
+                                def frontendImage = docker.build("${ECR_REPO_FRONTEND}:${BUILD_NUMBER}")
+                                frontendImage.push()
+                            }
                         }
                     }
                 }
