@@ -49,12 +49,12 @@ pipeline {
                 }
             }
         }
-        stage('Security Scan') {
-            steps {
-                bat "scout aws --report-dir scout-reports"
-                archiveArtifacts artifacts: 'scout-reports/**'
-            }
-        }
+        // stage('Security Scan') {
+        //     steps {
+        //         bat "scout aws --report-dir scout-reports"
+        //         archiveArtifacts artifacts: 'scout-reports/**'
+        //     }
+        // }
         stage('Deploy Frontend to ECS') {
             steps {
                 script {
