@@ -49,16 +49,17 @@ pipeline {
                 }
             }
         }
-        // stage('Security Scan') {
-        //     steps {
-        //         bat "scout aws --report-dir scout-reports"
-        //         archiveArtifacts artifacts: 'scout-reports/**'
-        //     }
-        // }
+        stage('Security Scan') {
+            steps {
+                bat "\"C:\\Users\\muhiddin\\AppData\\Local\\Programs\\Python\\Python313\\Scripts\\scout.exe\" aws --report-dir scout-reports"
+                archiveArtifacts artifacts: 'scout-reports/**'
+            }
+        }
         stage('Deploy Frontend to ECS') {
             steps {
                 script {
                     withCredentials([aws(credentialsId: 'awsCred', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                        // Update task definition dynamically
                         def taskDefJsonFrontend = """
                         {
                             "family": "${ECS_TASK_DEFINITION_FRONTEND}",
@@ -70,7 +71,7 @@ pipeline {
                             ]
                         }
                         """
-                        bat "echo ${taskDefJsonFrontend} > task-def-frontend.json"
+                        writeFile file: 'task-def-frontend.json', text: taskDefJsonFrontend
                         def taskDefArnFrontend = bat(script: "aws ecs register-task-definition --cli-input-json file://task-def-frontend.json --region ${AWS_REGION} --query 'taskDefinition.taskDefinitionArn' --output text", returnStdout: true).trim()
                         bat "aws ecs update-service --cluster ${ECS_CLUSTER} --service ${ECS_SERVICE_FRONTEND} --task-definition ${taskDefArnFrontend} --force-new-deployment --region ${AWS_REGION}"
                     }
@@ -83,6 +84,7 @@ pipeline {
                     withCredentials([aws(credentialsId: 'awsCred', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                         def secret = awsSecretsManager secretId: "${AURORA_SECRET_ARN}", region: "${AWS_REGION}", credentialsId: 'awsCred'
                         def secretJson = readJSON text: secret.secretString
+                        // Update task definition dynamically
                         def taskDefJsonBackend = """
                         {
                             "family": "${ECS_TASK_DEFINITION_BACKEND}",
@@ -99,7 +101,7 @@ pipeline {
                             ]
                         }
                         """
-                        bat "echo ${taskDefJsonBackend} > task-def-backend.json"
+                        writeFile file: 'task-def-backend.json', text: taskDefJsonBackend
                         def taskDefArnBackend = bat(script: "aws ecs register-task-definition --cli-input-json file://task-def-backend.json --region ${AWS_REGION} --query 'taskDefinition.taskDefinitionArn' --output text", returnStdout: true).trim()
                         bat "aws ecs update-service --cluster ${ECS_CLUSTER} --service ${ECS_SERVICE_BACKEND} --task-definition ${taskDefArnBackend} --force-new-deployment --region ${AWS_REGION}"
                     }
