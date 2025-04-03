@@ -70,7 +70,8 @@ pipeline {
                             "containerDefinitions": [
                                 {
                                     "name": "frontend-container",
-                                    "image": "${ECR_REPO_FRONTEND}:${BUILD_NUMBER}"
+                                    "image": "${ECR_REPO_FRONTEND}:${BUILD_NUMBER}",
+                                    "memory": 512
                                 }
                             ]
                         }
@@ -96,6 +97,7 @@ pipeline {
                                 {
                                     "name": "backend-container",
                                     "image": "${ECR_REPO_BACKEND}:${BUILD_NUMBER}",
+                                    "memory": 512,
                                     "environment": [
                                         {"name": "SPRING_DATASOURCE_URL", "value": "jdbc:mysql://${secretJson.host}:${secretJson.port}/${secretJson.dbname}"},
                                         {"name": "SPRING_DATASOURCE_USERNAME", "value": "${secretJson.username}"},
