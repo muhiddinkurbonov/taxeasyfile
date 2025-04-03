@@ -61,7 +61,7 @@ pipeline {
             steps {
                 script {
                     withCredentials([aws(credentialsId: 'awsCred', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-                        ecsDeploy taskDefinition: "${ECS_TASK_DEFINITION_FRONTEND}", serviceName: "${ECS_SERVICE_FRONTEND}", clusterName: "${ECS_CLUSTER}", containerName: 'frontend-container', image: "${ECR_REPO_FRONTEND}:${BUILD_NUMBER}", region: "${AWS_REGION}"
+                        ecsDeploy taskDefinition: "${ECS_TASK_DEFINITION_FRONTEND}", serviceName: "${ECS_SERVICE_FRONTEND}", clusterName: "${ECS_CLUSTER}", containerName: 'taxeasyfile-frontend', image: "${ECR_REPO_FRONTEND}:${BUILD_NUMBER}", region: "${AWS_REGION}"
                     }
                 }
             }
@@ -72,7 +72,7 @@ pipeline {
                     withCredentials([aws(credentialsId: 'awsCred', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                         def secret = awsSecretsManager secretId: "${AURORA_SECRET_ARN}", region: "${AWS_REGION}", credentialsId: 'awsCred'
                         def secretJson = readJSON text: secret.secretString
-                        ecsDeploy taskDefinition: "${ECS_TASK_DEFINITION_BACKEND}", serviceName: "${ECS_SERVICE_BACKEND}", clusterName: "${ECS_CLUSTER}", containerName: 'backend-container', image: "${ECR_REPO_BACKEND}:${BUILD_NUMBER}", environment: [SPRING_DATASOURCE_URL: "jdbc:mysql://${secretJson.host}:${secretJson.port}/${secretJson.dbname}", SPRING_DATASOURCE_USERNAME: "${secretJson.username}", SPRING_DATASOURCE_PASSWORD: "${secretJson.password}"], region: "${AWS_REGION}"
+                        ecsDeploy taskDefinition: "${ECS_TASK_DEFINITION_BACKEND}", serviceName: "${ECS_SERVICE_BACKEND}", clusterName: "${ECS_CLUSTER}", containerName: 'taxeasyfile-backend', image: "${ECR_REPO_BACKEND}:${BUILD_NUMBER}", environment: [SPRING_DATASOURCE_URL: "jdbc:mysql://${secretJson.host}:${secretJson.port}/${secretJson.dbname}", SPRING_DATASOURCE_USERNAME: "${secretJson.username}", SPRING_DATASOURCE_PASSWORD: "${secretJson.password}"], region: "${AWS_REGION}"
                     }
                 }
             }
