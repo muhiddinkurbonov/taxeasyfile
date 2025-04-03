@@ -19,7 +19,7 @@ pipeline {
     stages {
         stage('Build Frontend') {
             steps {
-                dir('frontend') {
+                dir('taxeasyfile-frontend') {
             script {
                 withEnv(["PATH+NODE=${tool 'NodeJS'}/bin"]) {
                     bat 'npm install'
@@ -37,7 +37,7 @@ pipeline {
         }
         stage('Build Backend') {
             steps {
-                dir('backend') {
+                dir('taxeasyfile-backend') {
                     sh 'mvn clean package -DskipTests'
                     script {
                         docker.withRegistry('https://070021538304.dkr.ecr.us-east-1.amazonaws.com', 'aws-credentials') {
