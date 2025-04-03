@@ -20,12 +20,12 @@ pipeline {
         stage('Build Frontend') {
             steps {
                 dir('taxeasyfile-frontend') {
-            script {
-                withEnv(["PATH+NODE=${tool 'NodeJS'}/bin"]) {
-                    bat 'npm install'
-                    bat 'npm run build'
-                }
-            }
+                    script {
+                        withEnv(["PATH+NODE=${tool 'NodeJS'}/bin"]) {
+                            bat 'npm install'
+                            bat 'npm run build'
+                        }
+                    }
                     script {
                         docker.withRegistry('https://070021538304.dkr.ecr.us-east-1.amazonaws.com', 'aws-credentials') {
                             def frontendImage = docker.build("${ECR_REPO_FRONTEND}:${BUILD_NUMBER}")
