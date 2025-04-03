@@ -36,7 +36,7 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     fetchData();
-  }, [roleFilter, statusFilter]);
+  }, []);
 
   const fetchData = async () => {
     try {
