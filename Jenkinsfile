@@ -22,8 +22,8 @@ pipeline {
                 dir('frontend') {
             script {
                 withEnv(["PATH+NODE=${tool 'NodeJS'}/bin"]) {
-                    sh 'npm install'
-                    sh 'npm run build'
+                    bat 'npm install'
+                    bat 'npm run build'
                 }
             }
                     script {
