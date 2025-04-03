@@ -51,7 +51,11 @@ pipeline {
         }
         stage('Security Scan') {
             steps {
-                bat "\"C:\\Users\\muhiddin\\AppData\\Local\\Programs\\Python\\Python313\\Scripts\\scout.exe\" aws --report-dir scout-reports"
+                script {
+                    withCredentials([aws(credentialsId: 'awsCred', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                        bat "\"C:\\Users\\muhiddin\\AppData\\Local\\Programs\\Python\\Python313\\Scripts\\scout.exe\" aws --report-dir scout-reports"
+                    }
+                }
                 archiveArtifacts artifacts: 'scout-reports/**'
             }
         }
