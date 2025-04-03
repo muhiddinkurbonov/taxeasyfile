@@ -48,14 +48,14 @@ pipeline {
                 }
             }
         }
-        // stage('Security Scan') {
-        //     steps {
-        //         sh 'trivy image ${ECR_REPO_FRONTEND}:${BUILD_NUMBER}'
-        //         sh 'trivy image ${ECR_REPO_BACKEND}:${BUILD_NUMBER}'
-        //         sh 'scout aws --report-dir scout-reports'
-        //         archiveArtifacts artifacts: 'scout-reports/**'
-        //     }
-        // }
+        stage('Security Scan') {
+            steps {
+                sh 'trivy image ${ECR_REPO_FRONTEND}:${BUILD_NUMBER}'
+                sh 'trivy image ${ECR_REPO_BACKEND}:${BUILD_NUMBER}'
+                sh 'scout aws --report-dir scout-reports'
+                archiveArtifacts artifacts: 'scout-reports/**'
+            }
+        }
         stage('Deploy Frontend to ECS') {
             steps {
                 script {
