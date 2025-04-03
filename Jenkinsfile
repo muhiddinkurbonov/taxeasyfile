@@ -17,11 +17,6 @@ pipeline {
         nodejs 'NodeJS'
     }
     stages {
-        stage('Checkout') {
-            steps {
-                git credentialsId: 'f8136524-b01e-44e6-8561-4c6a5d381f45', url: 'https://github.com/muhiddinkurbonov/taxeasyfile.git'
-            }
-        }
         stage('Build Frontend') {
             steps {
                 dir('frontend') {
