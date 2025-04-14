@@ -6,7 +6,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
@@ -15,24 +14,25 @@ import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import java.util.function.Function;
 
 @Component
 public class JwtUtil {
 
     private final SecretKey key;
-    private final long EXPIRATION_TIME = 1000 * 60 * 1; // 1 hour
-    private final long REFRESH_EXPIRATION_TIME = 1000 * 60 * 60 * 24; // 24 hours
+    private final long EXPIRATION_TIME; 
+    private final long REFRESH_EXPIRATION_TIME; 
 
     @Autowired
     private UserRepository userRepository;
 
-    public JwtUtil(@Value("${jwt.secret}") String secretKey) {
-        if (secretKey == null || secretKey.length() < 32) {
+    public JwtUtil(JwtConfig jwtConfig) {
+        if (jwtConfig.getSecret() == null || jwtConfig.getSecret().length() < 32) {
             throw new IllegalArgumentException("JWT secret key must be at least 32 characters long");
         }
-        this.key = Keys.hmacShaKeyFor(secretKey.getBytes());
+        this.key = Keys.hmacShaKeyFor(jwtConfig.getSecret().getBytes());
+        this.EXPIRATION_TIME = jwtConfig.getExpirationTime();
+        this.REFRESH_EXPIRATION_TIME = jwtConfig.getRefreshExpirationTime();
     }
 
     public String extractUsername(String token) {
@@ -66,7 +66,7 @@ public class JwtUtil {
         Map<String, Object> claims = new HashMap<>();
         claims.put("userId", user.getId().toString());
         String jwt = createToken(claims, userDetails.getUsername(), EXPIRATION_TIME);
-        String refreshToken = UUID.randomUUID().toString();
+        String refreshToken = createToken(claims, userDetails.getUsername(), REFRESH_EXPIRATION_TIME);
         user.setRefreshToken(refreshToken);
         userRepository.save(user);
         Map<String, String> tokens = new HashMap<>();
