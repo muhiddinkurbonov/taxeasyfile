@@ -52,7 +52,7 @@ pipeline {
                         sh 'mvn sonar:sonar -Dsonar.projectKey=TaxEasyFile -Dsonar.host.url=http://host.docker.internal:9000 -Dsonar.login=$SONAR_TOKEN'
                     }
                     dir('taxeasyfile-frontend') {
-                        sh 'npm global add sonar-scanner'
+                        sh 'npm install -g sonar-scanner'
                         sh 'sonar-scanner -Dsonar.projectKey=TaxEasyFile -Dsonar.sources=src -Dsonar.host.url=http://host.docker.internal:9000 -Dsonar.login=$SONAR_TOKEN'
                     }
                 }
