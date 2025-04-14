@@ -4,6 +4,9 @@ pipeline {
         maven 'Maven'
         nodejs 'NodeJS'
     }
+    environment {
+        SONAR_TOKEN = credentials('sonarqube-token') 
+    }
     stages {
         stage('Checkout') {
             steps {
@@ -43,11 +46,11 @@ pipeline {
             steps {
                 withSonarQubeEnv('SonarQube') {
                     dir('taxeasyfile-backend') {
-                        sh 'mvn sonar:sonar -Dsonar.projectKey=TaxEasyFile -Dsonar.host.url=http://host.docker.internal:9000 -Dsonar.login=$SONAR_TOKEN'
+                        sh 'mvn sonar:sonar -Dsonar.projectKey=taxeasyfile-backend -Dsonar.host.url=http://host.docker.internal:9000 -Dsonar.login=$SONAR_TOKEN'
                     }
                     dir('frontend') {
                         sh 'yarn global add sonar-scanner'
-                        sh 'sonar-scanner -Dsonar.projectKey=TaxEasyFile -Dsonar.sources=src -Dsonar.host.url=http://host.docker.internal:9000 -Dsonar.login=$SONAR_TOKEN'
+                        sh 'sonar-scanner -Dsonar.projectKey=taxeasyfile-frontend -Dsonar.sources=src -Dsonar.host.url=http://host.docker.internal:9000 -Dsonar.login=$SONAR_TOKEN'
                     }
                 }
             }
