@@ -6,7 +6,7 @@ pipeline {
         nodejs 'Node22'
     }
     environment {
-        SONAR_TOKEN = credentials('sonarqube-token') 
+        SONAR_TOKEN = credentials('jenkins-sonar-token') 
     }
     stages {
         stage('Checkout') {
