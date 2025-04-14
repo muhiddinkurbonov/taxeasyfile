@@ -12,7 +12,7 @@ pipeline {
         }
         stage('Build Frontend') {
             steps {
-                dir('frontend') {
+                dir('taxeasyfile-frontend') {
                     sh 'yarn install'
                     sh 'yarn build'
                 }
@@ -34,7 +34,7 @@ pipeline {
         }
         stage('Test Backend') {
             steps {
-                dir('backend') {
+                dir('taxeasyfile-backend') {
                     sh 'mvn test || true' // Allow tests to fail
                 }
             }
@@ -42,7 +42,7 @@ pipeline {
         stage('SonarQube Scan') {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    dir('backend') {
+                    dir('taxeasyfile-backend') {
                         sh 'mvn sonar:sonar -Dsonar.projectKey=TaxEasyFile -Dsonar.host.url=http://host.docker.internal:9000 -Dsonar.login=$SONAR_TOKEN'
                     }
                     dir('frontend') {
@@ -54,10 +54,10 @@ pipeline {
         }
         stage('Build Docker Images') {
             steps {
-                dir('frontend') {
+                dir('taxeasyfile-frontend') {
                     sh 'docker build -t taxeasyfile-frontend .'
                 }
-                dir('backend') {
+                dir('taxeasyfile-backend') {
                     sh 'docker build -t taxeasyfile-backend .'
                 }
             }
