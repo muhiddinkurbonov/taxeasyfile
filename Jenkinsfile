@@ -1,8 +1,9 @@
 pipeline {
     agent any
     tools {
-        maven 'Maven'
-        nodejs 'NodeJS'
+        jdk 'JDK17'
+        maven 'Maven3.9'
+        nodejs 'Node22'
     }
     environment {
         SONAR_TOKEN = credentials('sonarqube-token') 
@@ -16,15 +17,15 @@ pipeline {
         stage('Build Frontend') {
             steps {
                 dir('taxeasyfile-frontend') {
-                    sh 'yarn install'
-                    sh 'yarn build'
+                    sh 'npm install'
+                    sh 'npm build'
                 }
             }
         }
         stage('Test Frontend') {
             steps {
                 dir('taxeasyfile-frontend') {
-                    sh 'yarn test || true' // Allow tests to fail for now
+                    sh 'npm test || true' // Allow tests to fail for now
                 }
             }
         }
@@ -49,7 +50,7 @@ pipeline {
                         sh 'mvn sonar:sonar -Dsonar.projectKey=taxeasyfile-backend -Dsonar.host.url=http://host.docker.internal:9000 -Dsonar.login=$SONAR_TOKEN'
                     }
                     dir('taxeasyfile-frontend') {
-                        sh 'yarn global add sonar-scanner'
+                        sh 'npm global add sonar-scanner'
                         sh 'sonar-scanner -Dsonar.projectKey=taxeasyfile-frontend -Dsonar.sources=src -Dsonar.host.url=http://host.docker.internal:9000 -Dsonar.login=$SONAR_TOKEN'
                     }
                 }
