@@ -44,11 +44,11 @@ pipeline {
             steps {
                 withSonarQubeEnv('taxeasyfile-sonar') {
                     dir('taxeasyfile-backend') {
-                        bat 'mvn sonar:sonar -Dsonar.projectKey=TaxEasyFile -Dsonar.host.url=http://localhost:9000 -Dsonar.login=\$SONAR_TOKEN'
+                        bat 'mvn sonar:sonar -Dsonar.projectKey=TaxEasyFile -Dsonar.host.url=http://localhost:9000 -Dsonar.token=\$SONAR_TOKEN'
                     }
                     dir('taxeasyfile-frontend') {
                         bat 'npm install -g sonar-scanner'
-                        bat 'sonar-scanner -Dsonar.projectKey=TaxEasyFile -Dsonar.sources=src -Dsonar.host.url=http://localhost:9000 -Dsonar.login=\$SONAR_TOKEN'
+                        bat 'sonar-scanner -Dsonar.projectKey=TaxEasyFile -Dsonar.sources=src -Dsonar.host.url=http://localhost:9000 -Dsonar.token=\$SONAR_TOKEN'
                     }
                 }
             }
