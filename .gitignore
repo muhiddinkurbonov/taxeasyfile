@@ -46,9 +46,7 @@ yarn-error.log
 .cache/              
 
 # Environment files 
-.env
-.env.local
-.env.development
+
 .env.production
 
 # IDE-specific
