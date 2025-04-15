@@ -22,7 +22,7 @@ pipeline {
         stage('Test Frontend') {
             steps {
                 dir('taxeasyfile-frontend') {
-                    bat 'npm test || true' // Allow tests to fail for now
+                    bat 'npm test || true' 
                 }
             }
         }
@@ -36,7 +36,7 @@ pipeline {
         stage('Test Backend') {
             steps {
                 dir('taxeasyfile-backend') {
-                    bat 'mvn test || true' // Allow tests to fail
+                    bat 'mvn test || true' 
                 }
             }
         }
