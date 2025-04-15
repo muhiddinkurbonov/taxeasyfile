@@ -1,4 +1,4 @@
-import { rest } from "msw";
+import { http, HttpResponse } from "msw";
 import { setupServer } from "msw/node";
 import { login, signup, logout } from "../api/auth";
 import { api } from "../api/utils";
@@ -6,19 +6,16 @@ import { AuthRequest, SignupRequest } from "../api/types";
 
 // Setup MSW server for mocking API requests
 const server = setupServer(
-  rest.post("*/auth/login", (req, res, ctx) => {
-    return res(
-      ctx.status(200),
-      ctx.json({
-        jwt: "mock-jwt",
-        refreshToken: "mock-refresh-token",
-        userId: "123",
-        role: "USER",
-      })
-    );
+  http.post("*/auth/login", () => {
+    return HttpResponse.json({
+      jwt: "mock-jwt",
+      refreshToken: "mock-refresh-token",
+      userId: "123",
+      role: "USER",
+    });
   }),
-  rest.post("*/auth/signup", (req, res, ctx) => {
-    return res(ctx.status(200), ctx.json("User created"));
+  http.post("*/auth/signup", () => {
+    return HttpResponse.json("User created");
   })
 );
 
@@ -31,7 +28,7 @@ describe("Auth API", () => {
   describe("login", () => {
     it("should return jwt, refreshToken, userId, and role on successful login", async () => {
       const credentials: AuthRequest = {
-        email: "test@example.com",
+        username: "testUser",
         password: "password123",
       };
 
@@ -47,16 +44,16 @@ describe("Auth API", () => {
 
     it("should throw an error on failed login", async () => {
       server.use(
-        rest.post("*/auth/login", (req, res, ctx) => {
-          return res(
-            ctx.status(401),
-            ctx.json({ message: "Invalid credentials" })
+        http.post("*/auth/login", () => {
+          return HttpResponse.json(
+            { message: "Invalid credentials" },
+            { status: 401 }
           );
         })
       );
 
       const credentials: AuthRequest = {
-        email: "wrong@example.com",
+        username: "wrongUser",
         password: "wrong",
       };
 
@@ -72,6 +69,7 @@ describe("Auth API", () => {
         username: "testuser",
         email: "test@example.com",
         password: "password123",
+        role: "CPA"
       };
 
       const result = await signup(userData);
@@ -81,10 +79,10 @@ describe("Auth API", () => {
 
     it("should throw an error on failed signup", async () => {
       server.use(
-        rest.post("*/auth/signup", (req, res, ctx) => {
-          return res(
-            ctx.status(400),
-            ctx.json({ message: "Email already exists" })
+        http.post("*/auth/signup", () => {
+          return HttpResponse.json(
+            { message: "Email already exists" },
+            { status: 400 }
           );
         })
       );
@@ -93,6 +91,7 @@ describe("Auth API", () => {
         username: "testuser",
         email: "existing@example.com",
         password: "password123",
+        role: "CPA"
       };
 
       await expect(signup(userData)).rejects.toThrow(
