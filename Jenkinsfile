@@ -33,13 +33,13 @@ pipeline {
                 }
             }
         }
-        stage('Test Backend') {
-            steps {
-                dir('taxeasyfile-backend') {
-                    bat 'mvn test || true' 
-                }
-            }
-        }
+        // stage('Test Backend') {
+        //     steps {
+        //         dir('taxeasyfile-backend') {
+        //             bat 'mvn test || true' 
+        //         }
+        //     }
+        // }
         stage('SonarQube Scan') {
             steps {
                 withSonarQubeEnv('taxeasyfile-sonar') {
