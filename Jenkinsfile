@@ -42,7 +42,7 @@ pipeline {
         }
         stage('SonarQube Scan') {
             steps {
-                withSonarQubeEnv('SonarQube') {
+                withSonarQubeEnv('taxeasyfile-sonar') {
                     dir('taxeasyfile-backend') {
                         bat 'mvn sonar:sonar -Dsonar.projectKey=TaxEasyFile -Dsonar.host.url=http://localhost:9000 -Dsonar.login=$SONAR_TOKEN'
                     }
