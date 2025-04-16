@@ -48,14 +48,13 @@ public class JwtUtil {
         return claimsResolver.apply(claims);
     }
 
-private Claims extractAllClaims(String token) {
-    return Jwts.parserBuilder()
-                .setSigningKey(key)
+    private Claims extractAllClaims(String token) {
+        return Jwts.parser()
+                .verifyWith(key)
                 .build()
-                .parseClaimsJws(token)
-                .getBody();
-}
-
+                .parseSignedClaims(token)
+                .getPayload();
+    }
 
     private Boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());

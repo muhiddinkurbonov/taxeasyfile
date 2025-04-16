@@ -7,3 +7,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create-drop
+jwt:
+  secret: "gW85(hkdp9%c((34&5#BrbMf#$45z6TcqEhP"
+  expirationTime: 3600000  # 1 hour
+  refreshExpirationTime: 7200000  # 2 hours
