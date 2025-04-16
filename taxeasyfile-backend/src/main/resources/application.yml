@@ -15,8 +15,8 @@ spring:
 
 jwt:
   secret: ${JWT_SECRET}
-  expirationTime: ${JWT_EXPIRATION_TIME}
-  refreshExpirationTime: ${JWT_REFRESH_EXPIRATION_TIME}
+  expirationTime: ${JWT_EXPIRATION_TIME:3600000}
+  refreshExpirationTime: ${JWT_REFRESH_EXPIRATION_TIME:86400000}
 
 server:
   port: 8081
