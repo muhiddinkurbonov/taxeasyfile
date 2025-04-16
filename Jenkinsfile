@@ -4,8 +4,11 @@ pipeline {
         stage('Build Frontend') {
             steps {
                 dir('taxeasyfile-frontend') {
-                    bat 'npm install'
-                    bat 'npm run build'
+                    sh '''
+                    #!/bin/bash
+                    npm install
+                    npm run build
+                    '''
                 }
             }
         }
