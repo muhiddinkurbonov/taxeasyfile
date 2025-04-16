@@ -1,5 +1,5 @@
-CREATE DATABASE IF NOT EXISTS taxeasyfile_db;
-USE taxeasyfile_db;
+CREATE DATABASE IF NOT EXISTS taxeasyfileDB;
+USE taxeasyfileDB;
 
 CREATE TABLE users (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,

@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         AWS_REGION = 'us-east-1'
-        AWS_ACCOUNT_ID = credentials('aws-account-id') // Store in Jenkins credentials
+        AWS_ACCOUNT_ID = credentials('aws-account-id') 
         ECR_FRONTEND_REPO = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/taxeasyfile/taxeasyfile-frontend"
         ECR_BACKEND_REPO = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/taxeasyfile/taxeasyfile-backend"
         ECS_CLUSTER = 'TaxEasyFileCluster'
