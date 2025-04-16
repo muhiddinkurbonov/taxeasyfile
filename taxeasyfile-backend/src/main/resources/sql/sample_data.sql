@@ -1,4 +1,4 @@
-USE taxeasyfileDB;
+USE taxeasyfiledb;
 
 INSERT INTO users (username, password, email, role, active) VALUES
 ('cpa1', '$2a$10$hUZqaHzowgHNLF1cMs8u7eeVAaqtd/t04SJcaO9tsi/5mo3OpUtV2', 'cpa1@example.com', 'CPA', true),
