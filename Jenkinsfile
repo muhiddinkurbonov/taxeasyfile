@@ -69,7 +69,7 @@ pipeline {
         }
         stage('Push Docker Images to ECR') {
             steps {
-                withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
+                withAWS(credentials: 'taxeasyfile-aws-credentials', region: "${AWS_REGION}") {
                     sh '''
                         aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
                         docker build -t taxeasyfile-frontend ./taxeasyfile-frontend
@@ -84,7 +84,7 @@ pipeline {
         }
         stage('Deploy to ECS') {
             steps {
-                withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
+                withAWS(credentials: 'taxeasyfile-aws-credentials', region: "${AWS_REGION}") {
                     sh '''
                         aws ecs update-service \
                           --cluster ${ECS_CLUSTER} \

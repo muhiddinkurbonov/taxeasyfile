@@ -1,0 +1,24 @@
+services:
+  frontend:
+    build: ./taxeasyfile-frontend
+    ports:
+      - "80:80"
+  backend:
+    build: ./taxeasyfile-backend
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/taxeasyfile_db
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: pass
+    depends_on:
+      - db
+  db:
+    image: mysql:8.4
+    environment:
+      MYSQL_ROOT_PASSWORD: pass
+      MYSQL_DATABASE: taxeasyfile_db
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: pass
+    ports:
+      - "3306:3306"
