@@ -18,21 +18,21 @@ pipeline {
         stage('Test Frontend') {
             steps {
                 dir('taxeasyfile-frontend') {
-                    bat 'npm test' 
+                    sh 'npm test'
                 }
             }
         }
         stage('Build Backend') {
             steps {
                 dir('taxeasyfile-backend') {
-                    bat 'mvn clean package -DskipTests'
+                    sh 'mvn clean package -DskipTests'
                 }
             }
         }
         // stage('Test Backend') {
         //     steps {
         //         dir('taxeasyfile-backend') {
-        //             bat 'mvn test || true' 
+        //             sh 'mvn test || true'
         //         }
         //     }
         // }
@@ -40,11 +40,11 @@ pipeline {
             steps {
                 withSonarQubeEnv('taxeasyfile-sonar') {
                     dir('taxeasyfile-backend') {
-                        bat 'mvn sonar:sonar -Dsonar.projectKey=TaxEasyFile'
+                        sh 'mvn sonar:sonar -Dsonar.projectKey=TaxEasyFile'
                     }
                     dir('taxeasyfile-frontend') {
-                        bat 'npm install sonar-scanner --save-dev'
-                        bat 'npx sonar-scanner -Dsonar.projectKey=TaxEasyFile -Dsonar.sources=src'
+                        sh 'npm install sonar-scanner --save-dev'
+                        sh 'npx sonar-scanner -Dsonar.projectKey=TaxEasyFile -Dsonar.sources=src'
                     }
                 }
             }
@@ -52,10 +52,10 @@ pipeline {
         stage('Build Docker Images') {
             steps {
                 dir('taxeasyfile-frontend') {
-                    bat 'docker build -t taxeasyfile-frontend .'
+                    sh 'docker build -t taxeasyfile-frontend .'
                 }
                 dir('taxeasyfile-backend') {
-                    bat 'docker build -t taxeasyfile-backend .'
+                    sh 'docker build -t taxeasyfile-backend .'
                 }
             }
         }
