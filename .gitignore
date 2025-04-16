@@ -6,7 +6,7 @@ target/
 *.war
 
 *.properties
-
+*.yml
 
 # Maven wrapper (allow the wrapper JAR but ignore other wrapper files)
 .mvn/wrapper/*.bak
