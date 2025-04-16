@@ -24,8 +24,8 @@ Thumbs.db
 
 # Environment files
 .env
-application-*.yml
-application-*.properties
+*.yml
+*.properties
 
 # Database
 *.h2.db
