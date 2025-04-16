@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: taxeasyfile-backend
+  datasource:
+    url: jdbc:mysql://localhost:3306/taxeasyfile_db
+    username: root
+    password: M$pet27rfdh0241
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+  web:
+    resources:
+      add-mappings: false
+
+
+jwt:
+  secret: 'cfad0087-6ff5-4bfa-8311-73f21daaf6c2&?efH\]we03453ldjf'
+  expirationTime: 3600000 # 1 hour in milliseconds 
+  refreshExpirationTime: 86400000 # 24 hours in milliseconds
+
+
+
+server:
+  port: 8081
+  error:
+    include-message: never
+    include-binding-errors: never
+    include-stacktrace: never
+
+logging:
+  level:
+    root: INFO
+    org.hibernate.SQL: WARN
+    org.hibernate.type.descriptor.sql.BasicBinder: WARN
+    org.springframework.security: WARN
+
