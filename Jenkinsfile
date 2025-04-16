@@ -101,24 +101,23 @@ pipeline {
             }
         }
     }
-  post {
-    success {
-        withAWS(credentials: 'taxeasyfile-aws-credentials', region: "${AWS_REGION}") {
-            echo '✅ Deployment successful, sending SNS notifications...'
-            snsPublish topicArn: "${FRONTEND_SNS_TOPIC_ARN}", message: "Frontend ECS deployment succeeded"
-            snsPublish topicArn: "${BACKEND_SNS_TOPIC_ARN}", message: "Backend ECS deployment succeeded"
+    post {
+        success {
+            withAWS(credentials: 'taxeasyfile-aws-credentials', region: "${AWS_REGION}") {
+                echo '✅ Deployment successful, sending SNS notifications...'
+                snsPublish topicArn: "${FRONTEND_SNS_TOPIC_ARN}", message: "Frontend ECS deployment succeeded", subject: "Deployment Success"
+                snsPublish topicArn: "${BACKEND_SNS_TOPIC_ARN}", message: "Backend ECS deployment succeeded", subject: "Deployment Success"
+            }
+        }
+        failure {
+            withAWS(credentials: 'taxeasyfile-aws-credentials', region: "${AWS_REGION}") {
+                echo '❌ Deployment failed, sending SNS notifications...'
+                snsPublish topicArn: "${FRONTEND_SNS_TOPIC_ARN}", message: "Frontend ECS deployment failed", subject: "Deployment Failure"
+                snsPublish topicArn: "${BACKEND_SNS_TOPIC_ARN}", message: "Backend ECS deployment failed", subject: "Deployment Failure"
+            }
+        }
+        always {
+            cleanWs()
         }
     }
-    failure {
-        withAWS(credentials: 'taxeasyfile-aws-credentials', region: "${AWS_REGION}") {
-            echo '❌ Deployment failed, sending SNS notifications...'
-            snsPublish topicArn: "${FRONTEND_SNS_TOPIC_ARN}", message: "Frontend ECS deployment failed"
-            snsPublish topicArn: "${BACKEND_SNS_TOPIC_ARN}", message: "Backend ECS deployment failed"
-        }
-    }
-      always {
-          cleanWs()
-      }
-  }
-
 }
