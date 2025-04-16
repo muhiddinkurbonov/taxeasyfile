@@ -2,15 +2,16 @@ pipeline {
     agent any
     stages {
         stage('Build Frontend') {
-            steps {
                 dir('taxeasyfile-frontend') {
                     sh '''
-                    #!/bin/bash
-                    npm install
-                    npm run build
+                        #!/bin/bash
+                        echo "Current directory: $(pwd)"
+                        echo "Running npm install..."
+                        npm install
+                        echo "Running npm run build..."
+                        npm run build
                     '''
                 }
-            }
         }
         stage('Test Frontend') {
             steps {
