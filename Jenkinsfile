@@ -8,6 +8,8 @@ pipeline {
         ECS_CLUSTER = 'TaxEasyFileCluster'
         ECS_FRONTEND_SERVICE = 'taxeasyfile-frontend-service'
         ECS_BACKEND_SERVICE = 'taxeasyfile-backend-service'
+        FRONTEND_SNS_TOPIC_ARN = 'arn:aws:sns:us-east-1:070021538304:frontend-ecs-deployment-status'
+        BACKEND_SNS_TOPIC_ARN = 'arn:aws:sns:us-east-1:070021538304:backend-ecs-deployment-status'
     }
     stages {
         stage('Build Frontend') {
@@ -100,6 +102,29 @@ pipeline {
         }
     }
     post {
+        success {
+            script {
+                echo 'Deployment successful, sending notification to SNS...'
+                sh """
+                    aws sns publish --topic-arn ${FRONTEND_SNS_TOPIC_ARN} --message "Frontend ECS deployment succeeded" --region ${AWS_REGION}
+                """
+                sh """
+                    aws sns publish --topic-arn ${BACKEND_SNS_TOPIC_ARN} --message "Backend ECS deployment succeeded" --region ${AWS_REGION}
+                """
+            }
+        }
+        failure {
+            script {
+                echo 'Deployment failed, sending notification to SNS...'
+                sh """
+                    aws sns publish --topic-arn ${FRONTEND_SNS_TOPIC_ARN} --message "Frontend ECS deployment failed" --region ${AWS_REGION}
+                """
+                sh """
+                    aws sns publish --topic-arn ${BACKEND_SNS_TOPIC_ARN} --message "Backend ECS deployment failed" --region ${AWS_REGION}
+                """
+            }
+        }
+
         always {
             cleanWs()
         }
