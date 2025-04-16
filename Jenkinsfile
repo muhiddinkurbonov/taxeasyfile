@@ -2,6 +2,7 @@ pipeline {
     agent any
     stages {
         stage('Build Frontend') {
+            steps {
                 dir('taxeasyfile-frontend') {
                     sh '''
                         #!/bin/bash
@@ -12,6 +13,7 @@ pipeline {
                         npm run build
                     '''
                 }
+            }
         }
         stage('Test Frontend') {
             steps {
